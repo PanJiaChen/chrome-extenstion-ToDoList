@@ -121,15 +121,10 @@
             }, true);
 
             oDelete.addEventListener('click', function() {
-                if (confirm('是否确定要删除此项？\r\n\r\n点击确定删除，点击取消置为未完成。')) {
+                
                     Tasks.Del(task);
                     Tasks.RemoveHtml(task);
-                } else {
-                    task.is_finished = !task.is_finished;
-                    var lbl = this.getElementsByTagName('label')[0];
-                    lbl.className = (lbl.className == 'on') ? 'off' : 'on';
-                    Tasks.Edit(task);
-                }
+                 
             }, true);
 
             Tasks.$taskItemList.appendChild(oDiv);
