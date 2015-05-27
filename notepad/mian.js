@@ -64,7 +64,7 @@
                         task_list.push(JSON.parse(window.localStorage.getItem(key)));
                     }
                 }
-                
+
                 for (var i = 0, len = task_list.length; i < len; i++) {
                     Tasks.AppendHtml(task_list[i]);
                 }
@@ -78,14 +78,18 @@
             task.id = Tasks.index;
             window.localStorage.setItem("task:" + Tasks.index, JSON.stringify(task));
         },
+
         //修改
         Edit: function(task) {
             window.localStorage.setItem("task:" + task.id, JSON.stringify(task));
+            console.log(task)
         },
+
         //删除
         Del: function(task) {
             window.localStorage.removeItem("task:" + task.id);
         },
+
         AppendHtml: function(task) {
             var oDiv = document.createElement('div');
             oDiv.className = 'taskItem';
@@ -97,10 +101,15 @@
             oLabel.className = task.is_finished ? 'off' : 'on';
             var oSpan = document.createElement('span');
             oSpan.className = 'taskTitle';
+            var oDelete = document.createElement('span');
+            oDelete.className='taskDelete';
+            oDelete.innerText='删除';
             var oText = document.createTextNode(task.task_item);
             oSpan.appendChild(oText);
             oDiv.appendChild(oLabel);
             oDiv.appendChild(oSpan);
+            oDiv.appendChild(oDelete);
+
             //注册事件
             oDiv.addEventListener('click', function() {
                 if (!task.is_finished) {
@@ -108,18 +117,21 @@
                     var lbl = this.getElementsByTagName('label')[0];
                     lbl.className = (lbl.className == 'on') ? 'off' : 'on';
                     Tasks.Edit(task);
+                } 
+            }, true);
+
+            oDelete.addEventListener('click', function() {
+                if (confirm('是否确定要删除此项？\r\n\r\n点击确定删除，点击取消置为未完成。')) {
+                    Tasks.Del(task);
+                    Tasks.RemoveHtml(task);
                 } else {
-                    if (confirm('是否确定要删除此项？\r\n\r\n点击确定删除，点击取消置为未完成。')) {
-                        Tasks.Del(task);
-                        Tasks.RemoveHtml(task);
-                    } else {
-                        task.is_finished = !task.is_finished;
-                        var lbl = this.getElementsByTagName('label')[0];
-                        lbl.className = (lbl.className == 'on') ? 'off' : 'on';
-                        Tasks.Edit(task);
-                    }
+                    task.is_finished = !task.is_finished;
+                    var lbl = this.getElementsByTagName('label')[0];
+                    lbl.className = (lbl.className == 'on') ? 'off' : 'on';
+                    Tasks.Edit(task);
                 }
             }, true);
+
             Tasks.$taskItemList.appendChild(oDiv);
         },
         RemoveHtml: function(task) {
